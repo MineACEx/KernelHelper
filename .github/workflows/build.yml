@@ -17,6 +17,8 @@ jobs:
     name: Build Release APK
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       # ──────────────────────────────────────────
@@ -81,7 +83,7 @@ jobs:
           }
 
           echo "▶ 已安装的 SDK 组件："
-          $SDKMANAGER --list --installed 2>&1 | head -30
+          $SDKMANAGER --list_installed 2>&1 | head -30 || true
 
       # ──────────────────────────────────────────
       # 4. Gradle 缓存
