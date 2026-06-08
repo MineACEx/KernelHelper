@@ -1,0 +1,43 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :app
+WARNING: The option setting 'android.aapt2FromMavenOverride=/data/data/com.termux/files/usr/bin/aapt2' is experimental.
+The message received from the daemon indicates that the daemon has disappeared.
+Build request sent: Build{id=c1b842cc-6595-4606-b49a-1ac6930056f8, currentDir=/data/data/com.termux/files/home/kernelsu-project}
+Attempting to read last messages from the daemon log...
+Daemon pid: 13319
+  log file: /data/data/com.termux/files/home/.gradle/daemon/8.10.2/daemon-13319.out.log
+----- Last 20 lines from daemon log file - daemon-13319.out.log -----
+2026-06-08T14:02:47.921+0000 [DEBUG] [org.gradle.cache.internal.btree.BTreePersistentIndexedCache] Closing cache module-metadata.bin (/data/data/com.termux/files/home/.gradle/caches/modules-2/metadata-2.106/module-metadata.bin)
+2026-06-08T14:02:47.921+0000 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Releasing lock on artifact cache (/data/data/com.termux/files/home/.gradle/caches/modules-2).
+2026-06-08T14:02:47.921+0000 [DEBUG] [org.gradle.cache.internal.DefaultCacheCleanupExecutor] artifact cache (/data/data/com.termux/files/home/.gradle/caches/modules-2) has last been fully cleaned up 0 hours ago
+2026-06-08T14:02:47.922+0000 [DEBUG] [org.gradle.cache.internal.DefaultCacheCleanupExecutor] Skipping cleanup for artifact cache (/data/data/com.termux/files/home/.gradle/caches/modules-2) as it is not yet due
+2026-06-08T14:02:47.922+0000 [DEBUG] [org.gradle.cache.internal.DefaultCacheCleanupExecutor] groovy-dsl (/data/data/com.termux/files/home/.gradle/caches/8.10.2/groovy-dsl) has last been fully cleaned up 0 hours ago
+2026-06-08T14:02:47.922+0000 [DEBUG] [org.gradle.cache.internal.DefaultCacheCleanupExecutor] Skipping cleanup for groovy-dsl (/data/data/com.termux/files/home/.gradle/caches/8.10.2/groovy-dsl) as it is not yet due
+2026-06-08T14:02:47.922+0000 [DEBUG] [org.gradle.cache.internal.DefaultCacheCoordinator] Cache groovy-dsl (/data/data/com.termux/files/home/.gradle/caches/8.10.2/groovy-dsl) was closed 0 times.
+2026-06-08T14:02:47.922+0000 [DEBUG] [org.gradle.cache.internal.DefaultCacheCleanupExecutor] Artifact transforms cache (/data/data/com.termux/files/home/.gradle/caches/8.10.2/transforms) has last been fully cleaned up 0 hours ago
+2026-06-08T14:02:47.922+0000 [DEBUG] [org.gradle.cache.internal.DefaultCacheCleanupExecutor] Skipping cleanup for Artifact transforms cache (/data/data/com.termux/files/home/.gradle/caches/8.10.2/transforms) as it is not yet due
+2026-06-08T14:02:47.922+0000 [DEBUG] [org.gradle.cache.internal.DefaultCacheCoordinator] Cache Artifact transforms cache (/data/data/com.termux/files/home/.gradle/caches/8.10.2/transforms) was closed 0 times.
+2026-06-08T14:02:47.922+0000 [DEBUG] [org.gradle.cache.internal.DefaultCacheCleanupExecutor] kotlin-dsl (/data/data/com.termux/files/home/.gradle/caches/8.10.2/kotlin-dsl) has last been fully cleaned up 0 hours ago
+2026-06-08T14:02:47.923+0000 [DEBUG] [org.gradle.cache.internal.DefaultCacheCleanupExecutor] Skipping cleanup for kotlin-dsl (/data/data/com.termux/files/home/.gradle/caches/8.10.2/kotlin-dsl) as it is not yet due
+2026-06-08T14:02:47.923+0000 [DEBUG] [org.gradle.cache.internal.DefaultCacheCoordinator] Cache kotlin-dsl (/data/data/com.termux/files/home/.gradle/caches/8.10.2/kotlin-dsl) was closed 0 times.
+2026-06-08T14:02:47.923+0000 [DEBUG] [org.gradle.cache.internal.LockOnDemandCrossProcessCacheAccess] Releasing file lock for journal cache (/data/data/com.termux/files/home/.gradle/caches/journal-1)
+2026-06-08T14:02:47.923+0000 [DEBUG] [org.gradle.cache.internal.btree.BTreePersistentIndexedCache] Closing cache file-access.bin (/data/data/com.termux/files/home/.gradle/caches/journal-1/file-access.bin)
+2026-06-08T14:02:47.923+0000 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Releasing lock on journal cache (/data/data/com.termux/files/home/.gradle/caches/journal-1).
+2026-06-08T14:02:47.923+0000 [DEBUG] [org.gradle.cache.internal.LockOnDemandCrossProcessCacheAccess] Releasing file lock for file hash cache (/data/data/com.termux/files/home/.gradle/caches/8.10.2/fileHashes)
+2026-06-08T14:02:47.923+0000 [DEBUG] [org.gradle.cache.internal.btree.BTreePersistentIndexedCache] Closing cache fileHashes.bin (/data/data/com.termux/files/home/.gradle/caches/8.10.2/fileHashes/fileHashes.bin)
+2026-06-08T14:02:47.923+0000 [DEBUG] [org.gradle.cache.internal.btree.BTreePersistentIndexedCache] Closing cache resourceHashesCache.bin (/data/data/com.termux/files/home/.gradle/caches/8.10.2/fileHashes/resourceHashesCache.bin)
+2026-06-08T14:02:47.923+0000 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Releasing lock on file hash cache (/data/data/com.termux/files/home/.gradle/caches/8.10.2/fileHashes).----- End of the daemon log -----
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Gradle build daemon disappeared unexpectedly (it may have been killed or may have crashed)
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.

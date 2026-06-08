@@ -1,0 +1,63 @@
+Initialized native services in: /data/data/com.termux/files/home/.gradle/native
+Received JVM installation metadata from '/data/data/com.termux/files/usr/lib/jvm/java-21-openjdk': {JAVA_HOME=/data/data/com.termux/files/usr/lib/jvm/java-21-openjdk, JAVA_VERSION=21.0.11, JAVA_VENDOR=Termux, RUNTIME_NAME=OpenJDK Runtime Environment, RUNTIME_VERSION=21.0.11, VM_NAME=OpenJDK 64-Bit Server VM, VM_VERSION=21.0.11, VM_VENDOR=Termux, OS_ARCH=aarch64}
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Starting process 'Gradle build daemon'. Working directory: /data/data/com.termux/files/home/.gradle/daemon/8.10.2 Command: /data/data/com.termux/files/usr/lib/jvm/java-21-openjdk/bin/java -XX:MaxMetaspaceSize=1024m --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.prefs/java.util.prefs=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-opens=java.base/java.nio.charset=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED -Xms512m -Xmx3072m -Dfile.encoding=UTF-8 -Duser.country -Duser.language=en -Duser.variant -cp /data/data/com.termux/files/home/.gradle/wrapper/dists/gradle-8.10.2-bin/a04bxjujx95o3nb99gddekhwo/gradle-8.10.2/lib/gradle-daemon-main-8.10.2.jar -javaagent:/data/data/com.termux/files/home/.gradle/wrapper/dists/gradle-8.10.2-bin/a04bxjujx95o3nb99gddekhwo/gradle-8.10.2/lib/agents/gradle-instrumentation-agent-8.10.2.jar org.gradle.launcher.daemon.bootstrap.GradleDaemon 8.10.2
+Successfully started process 'Gradle build daemon'
+An attempt to start the daemon took 1.06 secs.
+The client will now receive all logging from the daemon (pid: 12766). The daemon log file: /data/data/com.termux/files/home/.gradle/daemon/8.10.2/daemon-12766.out.log
+Daemon will be stopped at the end of the build 
+Using 2 worker leases.
+Received JVM installation metadata from '/data/data/com.termux/files/usr/lib/jvm/java-21-openjdk': {JAVA_HOME=/data/data/com.termux/files/usr/lib/jvm/java-21-openjdk, JAVA_VERSION=21.0.11, JAVA_VENDOR=Termux, RUNTIME_NAME=OpenJDK Runtime Environment, RUNTIME_VERSION=21.0.11, VM_NAME=OpenJDK 64-Bit Server VM, VM_VERSION=21.0.11, VM_VENDOR=Termux, OS_ARCH=aarch64}
+Calculating task graph as no cached configuration is available for tasks: assembleRelease --no-watch
+Watching the file system is configured to be enabled if available
+File system watching is inactive
+Starting Build
+Generating /data/data/com.termux/files/home/.gradle/caches/8.10.2/generated-gradle-jars/gradle-api-8.10.2.jar
+Cannot use Kotlin build script compile avoidance with /data/data/com.termux/files/home/.gradle/caches/8.10.2/generated-gradle-jars/gradle-api-8.10.2.jar: class org/gradle/internal/extensions/stdlib/AutoCloseableExtensionsKt: inline fun useToRun(): compile avoidance is not supported with public inline functions
+Cannot use Kotlin build script compile avoidance with /data/data/com.termux/files/home/.gradle/wrapper/dists/gradle-8.10.2-bin/a04bxjujx95o3nb99gddekhwo/gradle-8.10.2/lib/gradle-kotlin-dsl-extensions-8.10.2.jar: class org/gradle/kotlin/dsl/GradleApiKotlinDslExtensions_1cbh1oqkvm762j10e96dawuh5Kt: inline fun domainObjectContainer(): compile avoidance is not supported with public inline functions
+Cannot use Kotlin build script compile avoidance with /data/data/com.termux/files/home/.gradle/wrapper/dists/gradle-8.10.2-bin/a04bxjujx95o3nb99gddekhwo/gradle-8.10.2/lib/gradle-kotlin-dsl-8.10.2.jar: class org/gradle/kotlin/dsl/ArtifactHandlerScope: inline fun invoke(): compile avoidance is not supported with public inline functions
+Caching disabled for Kotlin DSL script compilation (Settings/TopLevel/stage1) because:
+  Build cache is disabled
+Caching disabled for Kotlin DSL accessors for settings 'kernelsu-project' because:
+  Build cache is disabled
+Caching disabled for Kotlin DSL script compilation (Settings/TopLevel/stage2) because:
+  Build cache is disabled
+Settings evaluated using settings file '/data/data/com.termux/files/home/kernelsu-project/settings.gradle.kts'.
+Using local directory build cache for the root build (location = /data/data/com.termux/files/home/.gradle/caches/build-cache-1, removeUnusedEntriesAfter = 7 days).
+Projects loaded. Root project using build file '/data/data/com.termux/files/home/kernelsu-project/build.gradle.kts'.
+Included projects: [root project 'AceKernelManager', project ':app']
+
+> Configure project :
+Evaluating root project 'AceKernelManager' using build file '/data/data/com.termux/files/home/kernelsu-project/build.gradle.kts'.
+Build cache key for Kotlin DSL plugin specs accessors for classpath 'b27a162d178d306ba8d9ec2b2a37ae76' is 603cbcce7af37407125ca1c6318586dc
+Stored cache entry for Kotlin DSL plugin specs accessors for classpath 'b27a162d178d306ba8d9ec2b2a37ae76' with cache key 603cbcce7af37407125ca1c6318586dc
+Build cache key for Kotlin DSL script compilation (Project/TopLevel/stage1) is 23a5f0bc552511cdf423ff1e36d8c65c
+Stored cache entry for Kotlin DSL script compilation (Project/TopLevel/stage1) with cache key 23a5f0bc552511cdf423ff1e36d8c65c
+
+FAILURE: Build failed with an exception.
+
+* Where:
+Build file '/data/data/com.termux/files/home/kernelsu-project/build.gradle.kts' line: 1
+
+* What went wrong:
+Plugin [id: 'com.android.application', version: '8.5.2', apply: false] was not found in any of the following sources:
+
+- Gradle Core Plugins (plugin is not in 'org.gradle' namespace)
+- Included Builds (No included builds contain this plugin)
+- Plugin Repositories (could not resolve plugin artifact 'com.android.application:com.android.application.gradle.plugin:8.5.2')
+  Searched in the following repositories:
+    maven(https://maven.aliyun.com/repository/gradle-plugin)
+    maven2(https://maven.aliyun.com/repository/google)
+    maven3(https://maven.aliyun.com/repository/public)
+    Google
+    MavenRepo
+    Gradle Central Plugin Repository
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 33s
+Configuration cache entry stored.
