@@ -1,11 +1,10 @@
 *.iml
 .gradle
-build/
-app/build/
-.idea/
-*.apk
-*.aab
+.idea
+.kotlin
 .DS_Store
-*.log
+build
+captures
+.cxx
 local.properties
-debug.keystore
+key.jks
