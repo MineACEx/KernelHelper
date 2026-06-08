@@ -16,13 +16,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kerneluser.ace.ui.components.*
-import com.kerneluser.ace.ui.theme.AppColors
+import com.kerneluser.ace.ui.theme.LocalAceColors
 import com.kerneluser.ace.utils.DeviceInfo
 import com.kerneluser.ace.utils.RootUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen() {
+    val c = LocalAceColors.current
     var isLoading by remember { mutableStateOf(true) }
     var rootStatus by remember { mutableStateOf(RootUtils.RootStatus(false, "", "")) }
     var deviceInfo by remember { mutableStateOf(emptyMap<String, String>()) }
@@ -38,14 +39,14 @@ fun HomeScreen() {
             TopAppBar(
                 title = {
                     Column {
-                        Text("Ace Kernel", color = AppColors.TextPrimary, fontWeight = FontWeight.Bold, fontSize = 22.sp)
-                        Text("v1.0.00", color = AppColors.TextMuted, fontSize = 12.sp)
+                        Text("Ace Kernel", color = c.textPrimary, fontWeight = FontWeight.Bold, fontSize = 22.sp)
+                        Text("v1.0.00", color = c.textMuted, fontSize = 12.sp)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = AppColors.Bg)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = c.bg)
             )
         },
-        containerColor = AppColors.Bg
+        containerColor = c.bg
     ) { padding ->
         if (isLoading) {
             LoadingView(Modifier.padding(padding))
@@ -54,31 +55,26 @@ fun HomeScreen() {
                 Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
-                // Root status card
                 SurfaceCard {
                     Row(Modifier.fillMaxWidth().padding(18.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                         Icon(
                             if (rootStatus.isRooted) Icons.Outlined.VerifiedUser else Icons.Outlined.Cancel,
                             null,
-                            tint = if (rootStatus.isRooted) AppColors.Success else AppColors.Error,
+                            tint = if (rootStatus.isRooted) c.success else c.error,
                             modifier = Modifier.size(44.dp)
                         )
                         Column {
                             Text(
                                 if (rootStatus.isRooted) "Root 权限已获取" else "Root 权限未获取",
-                                color = AppColors.TextPrimary, fontWeight = FontWeight.Bold, fontSize = 17.sp
+                                color = c.textPrimary, fontWeight = FontWeight.Bold, fontSize = 17.sp
                             )
                             if (rootStatus.isRooted && rootStatus.rootType != "Unknown") {
-                                Text(
-                                    "${rootStatus.rootType} ${rootStatus.version}",
-                                    color = AppColors.TextSecondary, fontSize = 13.sp
-                                )
+                                Text("${rootStatus.rootType} ${rootStatus.version}", color = c.textSecondary, fontSize = 13.sp)
                             }
                         }
                     }
                 }
 
-                // Device info section
                 SectionHeader("设备信息")
                 SurfaceCard {
                     Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)) {
@@ -86,7 +82,7 @@ fun HomeScreen() {
                         InfoRow("Android 版本", deviceInfo["androidVersion"] ?: "-")
                         InfoRow("内核版本", deviceInfo["kernelVersion"] ?: "-")
                         val se = deviceInfo["selinuxStatus"] ?: "-"
-                        InfoRow("SELinux", se, iconColor = if (se.equals("Enforcing", true)) AppColors.Success else AppColors.Warning)
+                        InfoRow("SELinux", se, iconColor = if (se.equals("Enforcing", true)) c.success else c.warning)
                         InfoRow("安全补丁", deviceInfo["securityPatch"] ?: "-")
                         InfoRow("构建号", deviceInfo["display"] ?: "-")
                     }
@@ -107,21 +103,13 @@ fun HomeScreen() {
 
                 SectionHeader("指纹")
                 SurfaceCard {
-                    Box(Modifier.fillMaxWidth().padding(14.dp).clip(RoundedCornerShape(8.dp)).then(Modifier.fillMaxWidth())) {
-                        Text(
-                            deviceInfo["fingerprint"] ?: "-",
-                            color = AppColors.TextSecondary, fontFamily = FontFamily.Monospace, fontSize = 11.sp
-                        )
+                    Box(Modifier.fillMaxWidth().padding(14.dp).clip(RoundedCornerShape(8.dp))) {
+                        Text(deviceInfo["fingerprint"] ?: "-", color = c.textSecondary, fontFamily = FontFamily.Monospace, fontSize = 11.sp)
                     }
                 }
 
-                Spacer(Modifier.height(80.dp))
+                Spacer(Modifier.height(100.dp))
             }
         }
     }
-}
-
-@Composable
-fun SectionHeader(title: String) {
-    Text(title, color = AppColors.TextPrimary, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, modifier = Modifier.padding(top = 4.dp))
 }

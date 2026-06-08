@@ -6,14 +6,12 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.kerneluser.ace.ui.theme.AppColors
+import com.kerneluser.ace.ui.theme.LocalAceColors
 
 @Composable
 fun LoadingView(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(color = AppColors.Primary)
+    val c = LocalAceColors.current
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(color = c.primary)
     }
 }

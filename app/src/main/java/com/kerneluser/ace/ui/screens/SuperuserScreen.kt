@@ -14,7 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kerneluser.ace.ui.components.*
-import com.kerneluser.ace.ui.theme.AppColors
+import com.kerneluser.ace.ui.theme.LocalAceColors
 import com.kerneluser.ace.utils.RootUtils
 import com.kerneluser.ace.utils.SuperuserEntry
 import com.kerneluser.ace.utils.SuperuserUtils
@@ -22,6 +22,7 @@ import com.kerneluser.ace.utils.SuperuserUtils
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SuperuserScreen() {
+    val c = LocalAceColors.current
     var isLoading by remember { mutableStateOf(true) }
     var isRooted by remember { mutableStateOf(false) }
     val list = remember { mutableStateListOf<SuperuserEntry>() }
@@ -34,27 +35,27 @@ fun SuperuserScreen() {
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("权限管理", color = AppColors.TextPrimary, fontWeight = FontWeight.Bold) }, colors = TopAppBarDefaults.topAppBarColors(containerColor = AppColors.Bg)) },
-        containerColor = AppColors.Bg
+        topBar = { TopAppBar(title = { Text("权限管理", color = c.textPrimary, fontWeight = FontWeight.Bold) }, colors = TopAppBarDefaults.topAppBarColors(containerColor = c.bg)) },
+        containerColor = c.bg
     ) { padding ->
         if (isLoading) { LoadingView(Modifier.padding(padding)) }
-        else if (!isRooted) { EmptyState(Icons.Default.Shield, "需要 Root 权限", modifier = Modifier.padding(padding)) }
+        else if (!isRooted) { EmptyState(Icons.Filled.Shield, "需要 Root 权限", modifier = Modifier.padding(padding)) }
         else {
             Column(Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                // Grant section
                 SurfaceCard {
                     Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Text("授权应用", color = AppColors.TextPrimary, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+                        Text("授权应用", color = c.textPrimary, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom) {
-                            OutlinedTextField(input, { input = it }, Modifier.weight(1f), label = { Text("包名") }, placeholder = { Text("com.example.app") }, singleLine = true, colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = AppColors.Primary, focusedLabelColor = AppColors.Primary))
+                            OutlinedTextField(input, { input = it }, Modifier.weight(1f), label = { Text("包名") }, placeholder = { Text("com.example.app") }, singleLine = true,
+                                colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = c.primary, focusedLabelColor = c.primary))
                             Button(onClick = {
                                 if (input.isNotBlank()) { SuperuserUtils.grantApp(input); list.clear(); list.addAll(SuperuserUtils.getSuperuserList()); input = "" }
-                            }, enabled = input.isNotBlank(), colors = ButtonDefaults.buttonColors(containerColor = AppColors.Primary)) { Text("授权") }
+                            }, enabled = input.isNotBlank(), colors = ButtonDefaults.buttonColors(containerColor = c.primary)) { Text("授权") }
                         }
                     }
                 }
 
-                Text("已授权 (${list.size})", color = AppColors.TextPrimary, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+                Text("已授权 (${list.size})", color = c.textPrimary, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
 
                 if (list.isEmpty()) {
                     EmptyState(Icons.Outlined.VerifiedUser, "暂无授权", modifier = Modifier.height(200.dp))
@@ -63,10 +64,11 @@ fun SuperuserScreen() {
                         SurfaceCard {
                             Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                                 Column(Modifier.weight(1f)) {
-                                    Text(e.packageName, color = AppColors.TextPrimary, fontWeight = FontWeight.Medium, fontSize = 15.sp)
-                                    Text("${e.manager} · UID: ${e.uid}", color = AppColors.TextSecondary, fontSize = 12.sp)
+                                    Text(e.packageName, color = c.textPrimary, fontWeight = FontWeight.Medium, fontSize = 15.sp)
+                                    Text("${e.manager} · UID: ${e.uid}", color = c.textSecondary, fontSize = 12.sp)
                                 }
-                                FilledTonalButton(onClick = { SuperuserUtils.revokeApp(e.packageName); list.remove(e) }, colors = ButtonDefaults.filledTonalButtonColors(containerColor = AppColors.Error.copy(alpha = 0.1f), contentColor = AppColors.Error)) { Text("撤销") }
+                                FilledTonalButton(onClick = { SuperuserUtils.revokeApp(e.packageName); list.remove(e) },
+                                    colors = ButtonDefaults.filledTonalButtonColors(containerColor = c.error.copy(alpha = 0.1f), contentColor = c.error)) { Text("撤销") }
                             }
                         }
                     }

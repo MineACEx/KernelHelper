@@ -5,7 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -15,21 +18,26 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kerneluser.ace.ui.screens.*
-import com.kerneluser.ace.ui.theme.AppColors
+import com.kerneluser.ace.ui.theme.DarkTheme
+import com.kerneluser.ace.ui.theme.LightTheme
+import com.kerneluser.ace.ui.theme.LocalAceColors
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            AceKernelApp()
+            var isDark by remember { mutableStateOf(false) }
+            CompositionLocalProvider(LocalAceColors provides if (isDark) DarkTheme else LightTheme) {
+                AceKernelApp(isDark = isDark, onToggleDark = { isDark = it })
+            }
         }
     }
 }
@@ -43,64 +51,93 @@ enum class Tab(val label: String, val icon: ImageVector, val activeIcon: ImageVe
 }
 
 @Composable
-fun AceKernelApp() {
+fun AceKernelApp(isDark: Boolean = false, onToggleDark: (Boolean) -> Unit = {}) {
+    val c = LocalAceColors.current
     var selectedTab by remember { mutableStateOf(Tab.Home) }
 
-    Scaffold(
-        containerColor = AppColors.Background,
-        bottomBar = {
-            Surface(
+    Box(modifier = Modifier.fillMaxSize().background(c.bg)) {
+        // 主内容区
+        Box(modifier = Modifier.fillMaxSize().padding(bottom = 78.dp)) {
+            AnimatedContent(
+                targetState = selectedTab,
+                transitionSpec = {
+                    val dir = if (targetState.ordinal > initialState.ordinal)
+                        AnimatedContentTransitionScope.SlideDirection.Left
+                    else AnimatedContentTransitionScope.SlideDirection.Right
+                    (slideIntoContainer(dir, tween(320)) + fadeIn(tween(260)))
+                        .togetherWith(slideOutOfContainer(dir.opposite(), tween(320)) + fadeOut(tween(260)))
+                },
+                label = "page"
+            ) { tab ->
+                when (tab) {
+                    Tab.Home -> HomeScreen()
+                    Tab.Modules -> ModulesScreen()
+                    Tab.Superuser -> SuperuserScreen()
+                    Tab.Partition -> PartitionScreen()
+                    Tab.Settings -> SettingsScreen(isDark = isDark, onToggleDark = onToggleDark)
+                }
+            }
+        }
+
+        // 悬浮 Tab 栏 — 真高斯模糊
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .navigationBarsPadding()
+        ) {
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 12.dp),
-                shape = RoundedCornerShape(24.dp),
-                color = AppColors.GlassBg,
-                shadowElevation = 12.dp,
-                tonalElevation = 2.dp,
-                border = androidx.compose.foundation.BorderStroke(0.5.dp, AppColors.GlassBorder)
+                    .clip(RoundedCornerShape(24.dp))
+                    .blur(2.dp)
+                    .background(c.blurBg)
+                    .clip(RoundedCornerShape(24.dp))
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 4.dp, vertical = 6.dp),
+                        .padding(horizontal = 4.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Tab.entries.forEach { tab ->
-                        val isSelected = tab == selectedTab
-                        Column(
+                        val isSel = tab == selectedTab
+                        Box(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(12.dp))
+                                .weight(1f)
+                                .padding(horizontal = 2.dp)
+                                .clip(RoundedCornerShape(16.dp))
                                 .then(
-                                    if (isSelected) Modifier.background(AppColors.Primary.copy(alpha = 0.08f))
+                                    if (isSel) Modifier.background(c.primary.copy(alpha = 0.12f))
                                     else Modifier
                                 )
-                                .padding(horizontal = 12.dp, vertical = 4.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                                .then(
+                                    if (!isSel) Modifier.clickable(
+                                        indication = null,
+                                        interactionSource = remember { MutableInteractionSource() }
+                                    ) { selectedTab = tab }
+                                    else Modifier
+                                ),
+                            contentAlignment = Alignment.Center
                         ) {
-                            IconButton(onClick = { selectedTab = tab }) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(vertical = 4.dp)
+                            ) {
                                 Icon(
-                                    imageVector = if (isSelected) tab.activeIcon else tab.icon,
+                                    imageVector = if (isSel) tab.activeIcon else tab.icon,
                                     contentDescription = tab.label,
-                                    tint = if (isSelected) AppColors.TabActive else AppColors.TabInactive,
-                                    modifier = Modifier.size(24.dp)
+                                    tint = if (isSel) c.tabActive else c.tabInactive,
+                                    modifier = Modifier.size(22.dp)
                                 )
-                            }
-                            Spacer(Modifier.height(2.dp))
-                            Text(
-                                tab.label,
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = if (isSelected) AppColors.TabActive else AppColors.TabInactive
-                            )
-                            if (isSelected) {
-                                Spacer(Modifier.height(4.dp))
-                                Box(
-                                    Modifier
-                                        .width(16.dp)
-                                        .height(3.dp)
-                                        .clip(RoundedCornerShape(1.5.dp))
-                                        .background(AppColors.TabActive)
+                                Spacer(Modifier.height(3.dp))
+                                Text(
+                                    tab.label,
+                                    fontSize = 10.sp,
+                                    fontWeight = if (isSel) FontWeight.Bold else FontWeight.Normal,
+                                    color = if (isSel) c.tabActive else c.tabInactive,
+                                    maxLines = 1
                                 )
                             }
                         }
@@ -108,22 +145,13 @@ fun AceKernelApp() {
                 }
             }
         }
-    ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            AnimatedContent(
-                targetState = selectedTab,
-                transitionSpec = {
-                    fadeIn() togetherWith fadeOut()
-                }
-            ) { tab ->
-                when (tab) {
-                    Tab.Home -> HomeScreen()
-                    Tab.Modules -> ModulesScreen()
-                    Tab.Superuser -> SuperuserScreen()
-                    Tab.Partition -> PartitionScreen()
-                    Tab.Settings -> SettingsScreen()
-                }
-            }
-        }
     }
 }
+
+// 辅助：反向滑出方向
+private fun AnimatedContentTransitionScope.SlideDirection.opposite(): AnimatedContentTransitionScope.SlideDirection =
+    when (this) {
+        AnimatedContentTransitionScope.SlideDirection.Left -> AnimatedContentTransitionScope.SlideDirection.Right
+        AnimatedContentTransitionScope.SlideDirection.Right -> AnimatedContentTransitionScope.SlideDirection.Left
+        else -> this
+    }

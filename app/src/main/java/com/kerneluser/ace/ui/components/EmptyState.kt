@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kerneluser.ace.ui.theme.AppColors
+import com.kerneluser.ace.ui.theme.LocalAceColors
 
 @Composable
 fun EmptyState(
@@ -19,12 +19,13 @@ fun EmptyState(
     description: String? = null,
     modifier: Modifier = Modifier
 ) {
+    val c = LocalAceColors.current
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Icon(icon, null, tint = AppColors.TextMuted, modifier = Modifier.size(56.dp))
-            Text(title, color = AppColors.TextPrimary, fontSize = 16.sp)
+            Icon(icon, null, tint = c.textMuted, modifier = Modifier.size(56.dp))
+            Text(title, color = c.textPrimary, fontSize = 16.sp)
             if (description != null) {
-                Text(description, color = AppColors.TextSecondary, fontSize = 13.sp, textAlign = TextAlign.Center)
+                Text(description, color = c.textSecondary, fontSize = 13.sp, textAlign = TextAlign.Center)
             }
         }
     }

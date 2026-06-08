@@ -12,38 +12,31 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kerneluser.ace.ui.theme.AppColors
+import com.kerneluser.ace.ui.theme.LocalAceColors
 
 @Composable
 fun InfoRow(
     label: String,
     value: String,
     icon: ImageVector? = null,
-    iconColor: Color = AppColors.TextMuted,
+    iconColor: Color? = null,
     modifier: Modifier = Modifier
 ) {
+    val c = LocalAceColors.current
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (icon != null) {
-                    Icon(icon, null, tint = iconColor, modifier = Modifier.size(18.dp))
+                    Icon(icon, null, tint = iconColor ?: c.textMuted, modifier = Modifier.size(18.dp))
                 }
-                Text(label, color = AppColors.TextSecondary, fontSize = 14.sp)
+                Text(label, color = c.textSecondary, fontSize = 14.sp)
             }
-            Text(
-                value,
-                color = AppColors.TextPrimary,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
-            )
+            Text(value, color = c.textPrimary, fontSize = 14.sp, fontWeight = FontWeight.Medium)
         }
-        HorizontalDivider(thickness = 0.5.dp, color = AppColors.Divider)
+        HorizontalDivider(thickness = 0.5.dp, color = c.divider)
     }
 }
