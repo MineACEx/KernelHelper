@@ -21,7 +21,6 @@ jobs:
     steps:
       # ──────────────────────────────────────────
       # 1. 拉取完整 git 历史
-      #    版本号 = 30000 + commit 数，版本名 = git describe
       # ──────────────────────────────────────────
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -30,7 +29,7 @@ jobs:
           fetch-tags: true
 
       # ──────────────────────────────────────────
-      # 2. JDK 21（AGP 9.1.0 / Kotlin 2.3.20 强制要求）
+      # 2. JDK 21（AGP 9.1.0 / Kotlin 2.3.20 要求）
       # ──────────────────────────────────────────
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -39,28 +38,53 @@ jobs:
           java-version: '21'
 
       # ──────────────────────────────────────────
-      # 3. 安装 Android SDK 依赖项
-      #    compileSdk=36    build-tools=36.1.0    ndk=29.0.14206865
+      # 3. 安装 Android SDK
+      #    • platform 36 需要 --channel=3 (canary/preview)
+      #    • NDK 29.0.14206865 + cmake 3.31.5
       # ──────────────────────────────────────────
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          packages: |
-            platforms;android-36
-            build-tools;36.1.0
-            ndk;29.0.14206865
-            cmake;3.31.5
-
-      # ──────────────────────────────────────────
-      # 4. 接受 SDK 许可证
-      # ──────────────────────────────────────────
-      - name: Accept Android SDK licenses
         shell: bash
         run: |
-          yes | ${ANDROID_SDK_ROOT:-$ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null 2>&1 || true
+          # 确认 sdkmanager 可用
+          export ANDROID_SDK_ROOT=${ANDROID_SDK_ROOT:-$ANDROID_HOME}
+          SDKMANAGER="${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager"
+
+          # 接受许可证
+          yes | $SDKMANAGER --licenses > /dev/null 2>&1 || true
+
+          echo "▶ 安装 platform 36 (preview channel)..."
+          $SDKMANAGER --install "platforms;android-36" --channel=3 2>&1 || {
+            echo "⚠  preview channel 失败，尝试稳定通道..."
+            $SDKMANAGER --install "platforms;android-36" 2>&1 || {
+              echo "⚠  稳定通道也没有 36，回退到 35..."
+              $SDKMANAGER --install "platforms;android-35" 2>&1
+            }
+          }
+
+          echo "▶ 安装 build-tools 36.1.0..."
+          $SDKMANAGER --install "build-tools;36.1.0" --channel=3 2>&1 || {
+            $SDKMANAGER --install "build-tools;36.1.0" 2>&1 || {
+              echo "⚠  build-tools 36.1.0 不可用，使用 latest..."
+              $SDKMANAGER --install "build-tools;35.0.0" 2>&1
+            }
+          }
+
+          echo "▶ 安装 NDK 29.0.14206865..."
+          $SDKMANAGER --install "ndk;29.0.14206865" 2>&1 || {
+            echo "⚠  NDK 29.0.14206865 不可用，尝试 27.0.12077973..."
+            $SDKMANAGER --install "ndk;27.0.12077973" 2>&1
+          }
+
+          echo "▶ 安装 cmake 3.31.5..."
+          $SDKMANAGER --install "cmake;3.31.5" 2>&1 || {
+            $SDKMANAGER --install "cmake;3.22.1" 2>&1
+          }
+
+          echo "▶ 已安装的 SDK 组件："
+          $SDKMANAGER --list --installed 2>&1 | head -30
 
       # ──────────────────────────────────────────
-      # 5. Gradle 缓存加速
+      # 4. Gradle 缓存
       # ──────────────────────────────────────────
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -69,9 +93,7 @@ jobs:
           cache-read-only: ${{ github.event_name == 'pull_request' }}
 
       # ──────────────────────────────────────────
-      # 6. 签名配置
-      #    • PR / 无 secrets → IS_PR_BUILD=true（debug 签名 + .dev 后缀）
-      #    • 有 secrets  → 写入 sign.properties 进行正式签名
+      # 5. 签名配置
       # ──────────────────────────────────────────
       - name: Configure signing
         shell: bash
@@ -90,16 +112,14 @@ jobs:
           KEY_ALIAS=${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
           PROPEOF
-            echo "sign.properties 已生成"
           else
             echo "▶ PR / 无签名密钥 — 使用 debug 签名"
             IS_PR=true
           fi
-
           echo "IS_PR_BUILD=$IS_PR" >> $GITHUB_ENV
 
       # ──────────────────────────────────────────
-      # 7. 编译
+      # 6. 编译
       # ──────────────────────────────────────────
       - name: Build APK
         shell: bash
@@ -112,12 +132,12 @@ jobs:
           fi
 
       # ──────────────────────────────────────────
-      # 8. 上传 APK artifact（7 天保留）
+      # 7. 上传 APK
       # ──────────────────────────────────────────
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: KernelSU-${{ github.run_number }}
+          name: KernelHelper-${{ github.run_number }}
           path: |
             app/build/outputs/apk/release/*.apk
             app/build/outputs/apk/debug/*.apk
@@ -125,7 +145,7 @@ jobs:
           retention-days: 7
 
       # ──────────────────────────────────────────
-      # 9. 版本 Tag 推送时自动创建 GitHub Release
+      # 8. Tag 推送时创建 Release
       # ──────────────────────────────────────────
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')

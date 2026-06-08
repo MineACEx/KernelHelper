@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KernelSU"
         android:directBootAware="true"
-        android:zygotePreloadName="me.weishu.kernelsu.magica.AppZygotePreload">
+        android:zygotePreloadName="com.kernelhelper.acex.magica.AppZygotePreload">
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
@@ -83,7 +83,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
             <intent-filter>
-                <action android:name="me.weishu.kernelsu.magica.LAUNCH" />
+                <action android:name="com.kernelhelper.acex.magica.LAUNCH" />
             </intent-filter>
         </receiver>
     </application>
